@@ -1,0 +1,23 @@
+
+Projet-JavaScript/
+  index.html              <-- Page d'accueil
+  login.html              <-- Connexion
+  register.html           <-- Inscription
+  dashboard.html          <-- Liste des CVs
+  builder.html            <-- Editeur de CV
+  css/style.css           <-- Styles
+  config/
+    firebase-config.js    <-- la configuration (BD et authentification) avec Firebase
+    Toast.js              <-- Notifications
+  Model/
+    AuthModel.js          <-- Gestion authentification
+    CVModel.js            <-- Gestion des CVs
+  View/
+    AuthView.js           <-- Affichage formulaires auth
+    DashboardView.js      <-- Affichage grille CVs
+    BuilderView.js        <-- Affichage formulaire + preview
+  Controller/
+    AuthController.js     <-- Logique auth
+    DashboardController.js <-- Logique dashboard
+    BuilderController.js  <-- Logique editeur CV
+```
