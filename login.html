@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1e3a5f">
+  <title>Connexion - CV Builder Pro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main class="auth-page">
+    <div class="auth-card">
+      <div class="auth-card__logo">
+        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"/><path d="M7 3v4a1 1 0 0 0 1 1h7"/></svg>
+      </div>
+      <h1 class="auth-card__title">Bon retour !</h1>
+      <p class="auth-card__subtitle">Connectez-vous pour acceder a vos CVs.</p>
+      <p id="login-error" class="form-error hidden" role="alert"></p>
+      <form id="login-form" novalidate>
+        <div class="form-group">
+          <label for="login-email">Adresse email</label>
+          <input type="email" id="login-email" class="form-input" placeholder="exemple@email.com" required autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label for="login-password">Mot de passe</label>
+          <input type="password" id="login-password" class="form-input" placeholder="Votre mot de passe" required autocomplete="current-password">
+        </div>
+        <button type="submit" id="login-btn" class="btn btn--primary btn--block btn--lg">Se connecter</button>
+      </form>
+      <p class="auth-card__footer">Pas encore de compte ? <a href="register.html">Creer un compte</a></p>
+    </div>
+  </main>
+
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <!-- Config -->
+  <script src="config/firebase-config.js"></script>
+  <script src="config/Toast.js"></script>
+  <!-- Model -->
+  <script src="Model/AuthModel.js"></script>
+  <!-- View -->
+  <script src="View/AuthView.js"></script>
+  <!-- Controller -->
+  <script src="Controller/AuthController.js"></script>
+
+  <script>
+    $(function () {
+      AuthController.redirectIfAuth(function () {
+        AuthController.initLogin();
+      });
+    });
+  </script>
+</body>
+</html>
