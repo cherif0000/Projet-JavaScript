@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1e3a5f">
+  <title>CV Builder Pro - Creez votre CV professionnel</title>
+  <meta name="description" content="Application web MVC pour generer un CV professionnel. Plusieurs templates, export PDF, sauvegarde avec Firebase.">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/style.css">
+
+  <style>
+    /* ============================================================
+       LANDING PAGE - Dynamic & Animated
+       ============================================================ */
+
+    .landing {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* --- Animated Navbar --- */
+    .landing-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 20px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: transparent;
+      transition: background 0.4s ease, box-shadow 0.4s ease, padding 0.4s ease;
+    }
+
+    .landing-nav.scrolled {
+      background: rgba(20, 41, 66, 0.95);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 30px rgba(0,0,0,0.2);
+      padding: 12px 40px;
+    }
+
+    .landing-nav__brand {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #fff;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .landing-nav__brand svg {
+      width: 32px;
+      height: 32px;
+    }
+
+    .landing-nav__links {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .landing-nav__link {
+      color: rgba(255,255,255,0.85);
+      text-decoration: none;
+      padding: 10px 24px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .landing-nav__link:hover {
+      color: #fff;
+      background: rgba(255,255,255,0.12);
+      text-decoration: none;
+    }
+
+    .landing-nav__link--cta {
+      background: #fff;
+      color: var(--primary-dark);
+    }
+
+    .landing-nav__link--cta:hover {
+      background: var(--accent);
+      color: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+
+    /* --- Hero Section --- */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 20px 80px;
+      background: linear-gradient(160deg, #0f1f33 0%, #1e3a5f 40%, #2a5a8f 70%, #1e3a5f 100%);
+      color: #fff;
+      overflow: hidden;
+    }
+
+    /* Animated background grid */
+    .hero__grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      animation: gridMove 20s linear infinite;
+    }
+
+    @keyframes gridMove {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(60px, 60px); }
+    }
+
+    /* Floating orbs */
+    .hero__orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.25;
+      animation: orbFloat 8s ease-in-out infinite alternate;
+    }
+
+    .hero__orb--1 {
+      width: 400px;
+      height: 400px;
+      background: #4a90d9;
+      top: -100px;
+      right: -100px;
+      animation-delay: 0s;
+    }
+
+    .hero__orb--2 {
+      width: 300px;
+      height: 300px;
+      background: #6cb4ee;
+      bottom: -50px;
+      left: -50px;
+      animation-delay: -3s;
+      animation-duration: 10s;
+    }
+
+    .hero__orb--3 {
+      width: 200px;
+      height: 200px;
+      background: #3a7bd5;
+      top: 50%;
+      left: 60%;
+      animation-delay: -5s;
+      animation-duration: 12s;
+    }
+
+    @keyframes orbFloat {
+      0% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(30px, -20px) scale(1.1); }
+      100% { transform: translate(-20px, 30px) scale(0.95); }
+    }
+
+    /* Floating particles */
+    .hero__particles {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: rgba(255,255,255,0.4);
+      border-radius: 50%;
+      animation: particleRise linear infinite;
+    }
+
+    @keyframes particleRise {
+      0% {
+        transform: translateY(100vh) scale(0);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      90% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100px) scale(1);
+        opacity: 0;
+      }
+    }
+
+    .hero__content {
+      position: relative;
+      z-index: 2;
+      max-width: 800px;
+    }
+
+    .hero__badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.9);
+      padding: 8px 20px;
+      border-radius: 40px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-bottom: 28px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.15);
+      animation: fadeInUp 0.8s ease-out;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .hero__badge-dot {
+      width: 8px;
+      height: 8px;
+      background: #4ade80;
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.4); }
+    }
+
+    .hero__title {
+      font-family: 'Playfair Display', serif;
+      font-size: 4rem;
+      font-weight: 800;
+      line-height: 1.1;
+      margin-bottom: 24px;
+      color: #fff;
+      animation: fadeInUp 0.8s ease-out 0.15s backwards;
+    }
+
+    .hero__title-highlight {
+      position: relative;
+      display: inline-block;
+    }
+
+    .hero__title-highlight::after {
+      content: '';
+      position: absolute;
+      bottom: 4px;
+      left: 0;
+      right: 0;
+      height: 12px;
+      background: rgba(74, 144, 217, 0.4);
+      border-radius: 4px;
+      z-index: -1;
+      animation: highlightExpand 1s ease-out 1s backwards;
+    }
+
+    @keyframes highlightExpand {
+      from { transform: scaleX(0); transform-origin: left; }
+      to { transform: scaleX(1); transform-origin: left; }
+    }
+
+    .hero__subtitle {
+      font-size: 1.25rem;
+      color: rgba(255,255,255,0.75);
+      margin-bottom: 40px;
+      line-height: 1.7;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      animation: fadeInUp 0.8s ease-out 0.3s backwards;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .hero__actions {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fadeInUp 0.8s ease-out 0.45s backwards;
+    }
+
+    .hero__btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 18px 36px;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      font-family: 'Inter', sans-serif;
+      cursor: pointer;
+      border: none;
+    }
+
+    .hero__btn--primary {
+      background: #fff;
+      color: var(--primary-dark);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    }
+
+    .hero__btn--primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+      background: #f0f4f8;
+      text-decoration: none;
+    }
+
+    .hero__btn--primary svg {
+      transition: transform 0.3s ease;
+    }
+
+    .hero__btn--primary:hover svg {
+      transform: translateX(4px);
+    }
+
+    .hero__btn--secondary {
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+      border: 1.5px solid rgba(255,255,255,0.25);
+      backdrop-filter: blur(10px);
+    }
+
+    .hero__btn--secondary:hover {
+      background: rgba(255,255,255,0.2);
+      border-color: rgba(255,255,255,0.4);
+      transform: translateY(-3px);
+      text-decoration: none;
+    }
+
+    /* Stats bar */
+    .hero__stats {
+      display: flex;
+      gap: 40px;
+      justify-content: center;
+      margin-top: 60px;
+      animation: fadeInUp 0.8s ease-out 0.6s backwards;
+    }
+
+    .hero__stat {
+      text-align: center;
+    }
+
+    .hero__stat-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .hero__stat-label {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.6);
+      font-weight: 500;
+      font-family: 'Inter', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* --- Features Section --- */
+    .features {
+      padding: 100px 20px;
+      background: #f5f7fa;
+      position: relative;
+    }
+
+    .features__header {
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto 60px;
+    }
+
+    .features__label {
+      display: inline-block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--primary);
+      margin-bottom: 12px;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .features__title {
+      font-size: 2.5rem;
+      margin-bottom: 16px;
+      color: var(--primary-dark);
+    }
+
+    .features__subtitle {
+      color: var(--text-light);
+      font-size: 1.05rem;
+      line-height: 1.7;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .features__grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 28px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .feature-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 36px;
+      border: 1.5px solid #e8ecf1;
+      text-align: left;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(40px);
+    }
+
+    .feature-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--primary-light));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s ease;
+    }
+
+    .feature-card:hover {
+      box-shadow: 0 16px 48px rgba(30, 58, 95, 0.12);
+      transform: translateY(-8px);
+      border-color: var(--primary-light);
+    }
+
+    .feature-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .feature-card__icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 14px;
+      background: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      transition: all 0.4s ease;
+    }
+
+    .feature-card:hover .feature-card__icon {
+      background: var(--primary);
+    }
+
+    .feature-card__icon svg {
+      width: 26px;
+      height: 26px;
+      color: var(--primary);
+      transition: color 0.4s ease;
+    }
+
+    .feature-card:hover .feature-card__icon svg {
+      color: #fff;
+    }
+
+    .feature-card__title {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--primary-dark);
+    }
+
+    .feature-card__text {
+      color: var(--text-light);
+      font-size: 0.92rem;
+      line-height: 1.7;
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* --- How It Works Section --- */
+    .how-it-works {
+      padding: 100px 20px;
+      background: #fff;
+    }
+
+    .how-it-works__header {
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto 60px;
+    }
+
+    .how-it-works__label {
+      display: inline-block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--primary);
+      margin-bottom: 12px;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .how-it-works__title {
+      font-size: 2.5rem;
+      color: var(--primary-dark);
+    }
+
+    .steps {
+      display: flex;
+      gap: 32px;
+      max-width: 1000px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .steps::before {
+      content: '';
+      position: absolute;
+      top: 44px;
+      left: 80px;
+      right: 80px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--primary), var(--primary-light), var(--primary));
+      opacity: 0.2;
+    }
+
+    .step {
+      flex: 1;
+      text-align: center;
+      position: relative;
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .step.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .step__number {
+      width: 88px;
+      height: 88px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 800;
+      margin: 0 auto 20px;
+      position: relative;
+      z-index: 1;
+      box-shadow: 0 8px 24px rgba(30, 58, 95, 0.2);
+      transition: transform 0.3s ease;
+    }
+
+    .step:hover .step__number {
+      transform: scale(1.1);
+    }
+
+    .step__title {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-bottom: 8px;
+    }
+
+    .step__text {
+      color: var(--text-light);
+      font-size: 0.9rem;
+      line-height: 1.6;
+      font-family: 'Inter', sans-serif;
+      max-width: 240px;
+      margin: 0 auto;
+    }
+
+    /* --- CTA Section --- */
+    .cta-section {
+      padding: 100px 20px;
+      background: linear-gradient(160deg, #0f1f33 0%, #1e3a5f 50%, #2a5a8f 100%);
+      color: #fff;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-section__grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 50px 50px;
+    }
+
+    .cta-section__content {
+      position: relative;
+      z-index: 1;
+      max-width: 650px;
+      margin: 0 auto;
+    }
+
+    .cta-section__title {
+      font-size: 2.5rem;
+      color: #fff;
+      margin-bottom: 16px;
+    }
+
+    .cta-section__text {
+      color: rgba(255,255,255,0.7);
+      font-size: 1.1rem;
+      line-height: 1.7;
+      margin-bottom: 36px;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .cta-section__btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 18px 40px;
+      border-radius: 12px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      text-decoration: none;
+      background: #fff;
+      color: var(--primary-dark);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
+      font-family: 'Inter', sans-serif;
+    }
+
+    .cta-section__btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+      text-decoration: none;
+    }
+
+    /* --- Footer --- */
+    .landing-footer {
+      text-align: center;
+      padding: 28px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      background: #f5f7fa;
+      border-top: 1px solid #e8ecf1;
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* --- Responsive --- */
+    @media (max-width: 768px) {
+      .landing-nav {
+        padding: 16px 20px;
+      }
+      .landing-nav.scrolled {
+        padding: 10px 20px;
+      }
+      .hero__title {
+        font-size: 2.4rem;
+      }
+      .hero__subtitle {
+        font-size: 1.05rem;
+      }
+      .hero__stats {
+        gap: 24px;
+      }
+      .hero__stat-number {
+        font-size: 1.6rem;
+      }
+      .features__title,
+      .how-it-works__title,
+      .cta-section__title {
+        font-size: 1.8rem;
+      }
+      .steps {
+        flex-direction: column;
+        gap: 40px;
+      }
+      .steps::before {
+        display: none;
+      }
+      .landing-nav__links {
+        gap: 8px;
+      }
+      .landing-nav__link {
+        padding: 8px 16px;
+        font-size: 0.82rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero {
+        padding: 100px 16px 60px;
+      }
+      .hero__title {
+        font-size: 2rem;
+      }
+      .hero__btn {
+        padding: 14px 28px;
+        font-size: 0.9rem;
+        width: 100%;
+        justify-content: center;
+      }
+      .hero__actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .hero__stats {
+        flex-direction: column;
+        gap: 16px;
+      }
+    }
+
+    /* -- Scroll animations utility -- */
+    .animate-on-scroll {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .animate-on-scroll.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <div class="landing">
+
+    <!-- NAVBAR (fixed, transparent -> solid on scroll) -->
+    <nav class="landing-nav" id="landing-nav" role="navigation" aria-label="Navigation principale">
+      <a href="index.html" class="landing-nav__brand">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"/><path d="M7 3v4a1 1 0 0 0 1 1h7"/></svg>
+        CV Builder Pro
+      </a>
+      <div class="landing-nav__links">
+        <a href="login.html" class="landing-nav__link">Se connecter</a>
+        <a href="register.html" class="landing-nav__link landing-nav__link--cta">Commencer</a>
+      </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+      <!-- Animated background elements -->
+      <div class="hero__grid"></div>
+      <div class="hero__orb hero__orb--1"></div>
+      <div class="hero__orb hero__orb--2"></div>
+      <div class="hero__orb hero__orb--3"></div>
+      <div class="hero__particles" id="hero-particles"></div>
+
+      <div class="hero__content">
+        <div class="hero__badge">
+          <span class="hero__badge-dot"></span>
+          Gratuit et open-source
+        </div>
+
+        <h1 class="hero__title">
+          Creez un CV<br>
+          <span class="hero__title-highlight">professionnel</span> en minutes
+        </h1>
+
+        <p class="hero__subtitle">
+          Une interface intuitive, une preview en temps reel et un export PDF en un clic.
+          Tout ce qu'il faut pour decrocher votre prochain poste.
+        </p>
+
+        <div class="hero__actions">
+          <a href="register.html" class="hero__btn hero__btn--primary">
+            Commencer gratuitement
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+          <a href="login.html" class="hero__btn hero__btn--secondary">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" x2="3" y1="12" y2="12"/></svg>
+            Se connecter
+          </a>
+        </div>
+
+        <div class="hero__stats">
+          <div class="hero__stat">
+            <div class="hero__stat-number" id="stat-cvs">0</div>
+            <div class="hero__stat-label">CVs crees</div>
+          </div>
+          <div class="hero__stat">
+            <div class="hero__stat-number" id="stat-users">0</div>
+            <div class="hero__stat-label">Utilisateurs</div>
+          </div>
+          <div class="hero__stat">
+            <div class="hero__stat-number">PDF</div>
+            <div class="hero__stat-label">Export direct</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="features" id="features">
+      <div class="features__header animate-on-scroll">
+        <span class="features__label">Fonctionnalites</span>
+        <h2 class="features__title">Tout ce dont vous avez besoin</h2>
+        <p class="features__subtitle">
+          Des outils puissants pour creer le CV parfait, sans effort ni complication.
+        </p>
+      </div>
+
+      <div class="features__grid">
+        <div class="feature-card">
+          <div class="feature-card__icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"/><path d="M7 3v4a1 1 0 0 0 1 1h7"/></svg>
+          </div>
+          <h3 class="feature-card__title">Sauvegarde cloud</h3>
+          <p class="feature-card__text">Vos CVs sont sauvegardes dans Firebase. Retrouvez-les a tout moment depuis n'importe quel appareil, en toute securite.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-card__icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+          </div>
+          <h3 class="feature-card__title">Preview en temps reel</h3>
+          <p class="feature-card__text">Visualisez votre CV au format A4 en temps reel pendant que vous saisissez vos informations. Aucune surprise.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-card__icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+          </div>
+          <h3 class="feature-card__title">Export PDF</h3>
+          <p class="feature-card__text">Exportez votre CV en un clic au format PDF haute qualite, pret a etre envoye aux recruteurs.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-card__icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <h3 class="feature-card__title">Securise</h3>
+          <p class="feature-card__text">Authentification Firebase integree. Vos donnees personnelles sont protegees et accessibles uniquement par vous.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-card__icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/></svg>
+          </div>
+          <h3 class="feature-card__title">Responsive</h3>
+          <p class="feature-card__text">Interface adaptee a tous les ecrans : ordinateur, tablette ou smartphone, construisez votre CV partout.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-card__icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <h3 class="feature-card__title">Simple et rapide</h3>
+          <p class="feature-card__text">Aucune installation requise. Creez un compte et commencez a construire votre CV en moins de 2 minutes.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="how-it-works" id="how-it-works">
+      <div class="how-it-works__header animate-on-scroll">
+        <span class="how-it-works__label">Comment ca marche</span>
+        <h2 class="how-it-works__title">3 etapes simples</h2>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step__number">1</div>
+          <h3 class="step__title">Creez votre compte</h3>
+          <p class="step__text">Inscrivez-vous gratuitement avec votre email en quelques secondes.</p>
+        </div>
+        <div class="step">
+          <div class="step__number">2</div>
+          <h3 class="step__title">Remplissez vos infos</h3>
+          <p class="step__text">Ajoutez vos experiences, formations et competences dans le formulaire intuitif.</p>
+        </div>
+        <div class="step">
+          <div class="step__number">3</div>
+          <h3 class="step__title">Exportez en PDF</h3>
+          <p class="step__text">Telecharger votre CV professionnel au format PDF, pret a l'emploi.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+      <div class="cta-section__grid"></div>
+      <div class="cta-section__content animate-on-scroll">
+        <h2 class="cta-section__title">Pret a creer votre CV ?</h2>
+        <p class="cta-section__text">
+          Rejoignez des centaines d'utilisateurs qui font confiance a CV Builder Pro
+          pour construire leur curriculum vitae professionnel.
+        </p>
+        <a href="register.html" class="cta-section__btn">
+          Commencer maintenant
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="landing-footer">
+      <p>CV Builder Pro - Projet universitaire</p>
+    </footer>
+
+  </div>
+
+  <script>
+    (function () {
+      /* --- Navbar scroll effect --- */
+      var nav = document.getElementById('landing-nav');
+      window.addEventListener('scroll', function () {
+        if (window.scrollY > 60) {
+          nav.classList.add('scrolled');
+        } else {
+          nav.classList.remove('scrolled');
+        }
+      });
+
+      /* --- Generate floating particles --- */
+      var particlesContainer = document.getElementById('hero-particles');
+      if (particlesContainer) {
+        for (var i = 0; i < 30; i++) {
+          var particle = document.createElement('div');
+          particle.className = 'particle';
+          particle.style.left = Math.random() * 100 + '%';
+          particle.style.animationDuration = (6 + Math.random() * 10) + 's';
+          particle.style.animationDelay = (Math.random() * 8) + 's';
+          particle.style.width = (2 + Math.random() * 4) + 'px';
+          particle.style.height = particle.style.width;
+          particlesContainer.appendChild(particle);
+        }
+      }
+
+      /* --- Animated stat counters --- */
+      function animateCounter(elementId, target, suffix) {
+        var el = document.getElementById(elementId);
+        if (!el) return;
+        var current = 0;
+        var increment = Math.ceil(target / 60);
+        var timer = setInterval(function () {
+          current += increment;
+          if (current >= target) {
+            current = target;
+            clearInterval(timer);
+          }
+          el.textContent = current + (suffix || '+');
+        }, 30);
+      }
+
+      /* Start counter animation when hero is visible */
+      var counterStarted = false;
+      var observer = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting && !counterStarted) {
+            counterStarted = true;
+            animateCounter('stat-cvs', 1200, '+');
+            animateCounter('stat-users', 350, '+');
+          }
+        });
+      }, { threshold: 0.5 });
+
+      var statsSection = document.querySelector('.hero__stats');
+      if (statsSection) {
+        observer.observe(statsSection);
+      }
+
+      /* --- Scroll animations --- */
+      var scrollElements = document.querySelectorAll('.animate-on-scroll, .feature-card, .step');
+      var scrollObserver = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            // Add stagger delay for feature cards and steps
+            var el = entry.target;
+            var parent = el.parentElement;
+            if (parent) {
+              var siblings = parent.querySelectorAll('.feature-card, .step');
+              var index = Array.prototype.indexOf.call(siblings, el);
+              if (index > -1) {
+                el.style.transitionDelay = (index * 0.1) + 's';
+              }
+            }
+            el.classList.add('visible');
+            scrollObserver.unobserve(el);
+          }
+        });
+      }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+      scrollElements.forEach(function (el) {
+        scrollObserver.observe(el);
+      });
+
+      /* --- Smooth scrolling for anchor links --- */
+      document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
+        anchor.addEventListener('click', function (e) {
+          e.preventDefault();
+          var target = document.querySelector(this.getAttribute('href'));
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
