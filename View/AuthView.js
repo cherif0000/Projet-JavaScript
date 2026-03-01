@@ -2,13 +2,12 @@
    VIEW : AuthView.js
    Gere l'affichage et les interactions des pages
    d'authentification (login et inscription).
-   Utilise jQuery pour la manipulation du DOM.
  */
 
 var AuthView = {
 
   /**
-   * Initialise les ecouteurs du formulaire de connexion.
+    Initialise les ecouteurs du formulaire de connexion.
     @param {function} onSubmit - callback(email, password)
    */
   initLogin: function (onSubmit) {

@@ -1,16 +1,15 @@
-/* ============================================================
+/* 
    VIEW : BuilderView.js
-   -----------------------------------------------------------
    Gere l'affichage du formulaire de construction de CV et
    le rendu en temps reel de la preview A4.
    Utilise jQuery pour la manipulation du DOM.
-   ============================================================ */
+ */
 
 var BuilderView = {
 
   /**
-   * Remplit le formulaire avec les donnees d'un CV existant.
-   * @param {object} cvData
+    Remplit le formulaire avec les donnees d'un CV existant.
+    @param {object} cvData
    */
   populateForm: function (cvData) {
     var pi = cvData.personalInfo || {};
