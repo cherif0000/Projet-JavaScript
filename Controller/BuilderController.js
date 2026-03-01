@@ -1,8 +1,3 @@
-/*    CONTROLLER : BuilderController.js
-   Gere la logique du constructeur de CV : chargement des
-   donnees, sauvegarde, preview en temps reel, ajout/suppression
-   d'items repetables, et export PDF. */
-
 var BuilderController = {
 
   currentUser: null,
@@ -221,9 +216,7 @@ var BuilderController = {
     try { localStorage.removeItem(BuilderController.localStorageKey); } catch (e) {}
   },
 
-  /* ============================================================
-     CORE
-     ============================================================ */
+
 
   loadCV: function (cvId) {
     return CVModel.getCVById(BuilderController.currentUser.uid, cvId)
@@ -288,6 +281,9 @@ var BuilderController = {
         }
 
         Toast.show("CV sauvegarde avec succes !", "success");
+        setTimeout(function () {
+          window.location.href = "dashboard.html";
+        }, 1500);
       })
       .catch(function (error) {
         Toast.show("Erreur lors de la sauvegarde.", "error");
