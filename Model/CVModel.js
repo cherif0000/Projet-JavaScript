@@ -1,15 +1,14 @@
-/* ============================================================
+/*
    MODEL : CVModel.js
-   -----------------------------------------------------------
    Gere toutes les operations CRUD sur les CVs dans Firestore.
    Chaque CV est stocke dans : users/{uid}/cvs/{cvId}
-   ============================================================ */
+*/
 
 var CVModel = {
 
   /**
    * Cree un nouveau CV vide avec des valeurs par defaut.
-   * @returns {object} Structure d'un CV vierge
+    @returns {object} Structure d'un CV vierge
    */
   createEmptyCV: function () {
     return {
@@ -33,10 +32,10 @@ var CVModel = {
 
   /**
    * Sauvegarde un CV dans Firestore (creation ou mise a jour).
-   * @param {string} uid - ID utilisateur
-   * @param {string|null} cvId - ID du CV (null = creation)
-   * @param {object} cvData - Donnees du CV
-   * @returns {Promise<string>} ID du CV sauvegarde
+    @param {string} uid - ID utilisateur
+    @param {string|null} cvId - ID du CV (null = creation)
+    @param {object} cvData - Donnees du CV
+    @returns {Promise<string>} ID du CV sauvegarde
    */
   saveCV: function (uid, cvId, cvData) {
     var collection = db.collection("users").doc(uid).collection("cvs");
@@ -62,8 +61,8 @@ var CVModel = {
 
   /**
    * Recupere tous les CVs d'un utilisateur.
-   * @param {string} uid
-   * @returns {Promise<Array>} Liste des CVs avec leur ID
+    @param {string} uid
+    @returns {Promise<Array>} Liste des CVs avec leur ID
    */
   getAllCVs: function (uid) {
     return db.collection("users").doc(uid)
@@ -81,9 +80,9 @@ var CVModel = {
 
   /**
    * Recupere un CV specifique par son ID.
-   * @param {string} uid
-   * @param {string} cvId
-   * @returns {Promise<object|null>}
+    @param {string} uid
+    @param {string} cvId
+    @returns {Promise<object|null>}
    */
   getCVById: function (uid, cvId) {
     return db.collection("users").doc(uid)
@@ -98,8 +97,8 @@ var CVModel = {
 
   /**
    * Supprime un CV.
-   * @param {string} uid
-   * @param {string} cvId
+    @param {string} uid
+    @param {string} cvId
    */
   deleteCV: function (uid, cvId) {
     return db.collection("users").doc(uid)

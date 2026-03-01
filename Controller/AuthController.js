@@ -1,7 +1,7 @@
 /* CONTROLLER : AuthController.js
    Fait le lien entre AuthModel et AuthView.
-   Gere la logique de connexion, inscription et redirection.
-   Utilise jQuery. */
+   Gere la logique de connexion, inscription et redirection. 
+*/
 
 var AuthController = {
 
@@ -46,14 +46,13 @@ var AuthController = {
   },
 
   logout: function () {
-    sessionStorage.setItem("cv_just_logged_out", "true");
-
     AuthModel.logout()
       .then(function () {
-        window.location.href = "index.html";
+        // On pose le flag APRES la deconnexion reussie
+        sessionStorage.setItem("cv_just_logged_out", "true");
+        window.location.href = "login.html";
       })
       .catch(function () {
-        sessionStorage.removeItem("cv_just_logged_out");
         Toast.show("Erreur lors de la deconnexion.", "error");
       });
   },
@@ -64,7 +63,9 @@ var AuthController = {
    * @param {function} callback - recoit l'utilisateur si connecte
    */
   requireAuth: function (callback) {
-    AuthModel.onAuthStateChanged(function (user) {
+    var unsubscribe = AuthModel.onAuthStateChanged(function (user) {
+      // On se desabonne apres le premier appel pour eviter les fuites
+      if (unsubscribe) unsubscribe();
       if (user) {
         callback(user);
       } else {
@@ -80,14 +81,16 @@ var AuthController = {
    */
   redirectIfAuth: function (callback) {
     var justLoggedOut = sessionStorage.getItem("cv_just_logged_out") === "true";
+    if (justLoggedOut) {
+      sessionStorage.removeItem("cv_just_logged_out");
+    }
 
-    AuthModel.onAuthStateChanged(function (user) {
+    var unsubscribe = AuthModel.onAuthStateChanged(function (user) {
+      if (unsubscribe) unsubscribe();
+
       if (justLoggedOut) {
-        // On consomme le flag
-        sessionStorage.removeItem("cv_just_logged_out");
-
+        // Vient de se deconnecter : on s'assure que Firebase a bien termine
         if (user) {
-          // Firebase n'a pas encore mis a jour -> on force le signOut
           AuthModel.logout().then(function () {
             if (callback) callback();
           });

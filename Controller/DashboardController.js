@@ -1,10 +1,8 @@
-/* ============================================================
+/*
    CONTROLLER : DashboardController.js
-   -----------------------------------------------------------
    Gere la logique du tableau de bord : chargement des CVs,
    suppression, navigation vers l'editeur et export PDF.
-   Utilise jQuery.
-   ============================================================ */
+*/
 
 var DashboardController = {
 

@@ -134,9 +134,7 @@ var BuilderController = {
     });
   },
 
-  /**
-   * Sauvegarde le CV dans Firestore.
-   */
+  /* Sauvegarde le CV dans Firestore. */
   saveCV: function () {
     var $btn = $("#save-btn");
     $btn.prop("disabled", true).html('<span class="spinner"></span> Sauvegarde...');
@@ -167,32 +165,24 @@ var BuilderController = {
       });
   },
 
-  /**
-   * Exporte le CV en PDF via window.print().
-   */
+  /* Exporte le CV en PDF via window.print().*/
   exportPDF: function () {
     window.print();
   },
 
-  /**
-   * Ajoute une nouvelle experience.
-   */
+  /* Ajoute une nouvelle experience.*/
   addExperience: function () {
     BuilderView.addExperienceItem();
     BuilderController.triggerPreviewUpdate();
   },
 
-  /**
-   * Ajoute une nouvelle formation.
-   */
+  /*  Ajoute une nouvelle formation. */
   addEducation: function () {
     BuilderView.addEducationItem();
     BuilderController.triggerPreviewUpdate();
   },
 
-  /**
-   * Ajoute une nouvelle langue.
-   */
+  /* Ajoute une nouvelle langue. */
   addLanguage: function () {
     BuilderView.addLanguageItem();
     BuilderController.triggerPreviewUpdate();
@@ -200,16 +190,14 @@ var BuilderController = {
 
   /**
    * Supprime un element repetable (experience, formation, langue).
-   * @param {HTMLElement} btn - Le bouton de suppression
+    @param {HTMLElement} btn - Le bouton de suppression
    */
   removeItem: function (btn) {
     $(btn).closest(".repeatable-item").remove();
     BuilderController.triggerPreviewUpdate();
   },
 
-  /**
-   * Declenche une mise a jour de la preview.
-   */
+  /* Declenche une mise a jour de la preview. */
   triggerPreviewUpdate: function () {
     var data = BuilderView.collectFormData();
     BuilderView.updatePreview(data);

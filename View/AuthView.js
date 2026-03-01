@@ -1,16 +1,15 @@
-/* ============================================================
+/* 
    VIEW : AuthView.js
-   -----------------------------------------------------------
    Gere l'affichage et les interactions des pages
    d'authentification (login et inscription).
    Utilise jQuery pour la manipulation du DOM.
-   ============================================================ */
+ */
 
 var AuthView = {
 
   /**
    * Initialise les ecouteurs du formulaire de connexion.
-   * @param {function} onSubmit - callback(email, password)
+    @param {function} onSubmit - callback(email, password)
    */
   initLogin: function (onSubmit) {
     $("#login-form").on("submit", function (e) {
@@ -22,8 +21,8 @@ var AuthView = {
   },
 
   /**
-   * Initialise les ecouteurs du formulaire d'inscription.
-   * @param {function} onSubmit - callback(name, email, password)
+    Initialise les ecouteurs du formulaire d'inscription.
+    @param {function} onSubmit - callback(name, email, password)
    */
   initRegister: function (onSubmit) {
     $("#register-form").on("submit", function (e) {
@@ -49,8 +48,8 @@ var AuthView = {
 
   /**
    * Affiche un message d'erreur dans un element specifique.
-   * @param {string} elementId
-   * @param {string} message
+    @param {string} elementId
+    @param {string} message
    */
   showError: function (elementId, message) {
     $("#" + elementId).text(message).removeClass("hidden");
@@ -58,7 +57,7 @@ var AuthView = {
 
   /**
    * Cache un message d'erreur.
-   * @param {string} elementId
+    @param {string} elementId
    */
   hideError: function (elementId) {
     $("#" + elementId).text("").addClass("hidden");
@@ -66,8 +65,8 @@ var AuthView = {
 
   /**
    * Active/desactive l'etat de chargement du bouton.
-   * @param {string} btnId
-   * @param {boolean} loading
+    @param {string} btnId
+    @param {boolean} loading
    */
   setLoading: function (btnId, loading) {
     var $btn = $("#" + btnId);
