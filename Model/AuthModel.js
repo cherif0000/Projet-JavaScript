@@ -9,10 +9,10 @@ var AuthModel = {
   /**
    * Inscrit un nouvel utilisateur avec email/mot de passe.
    * Cree aussi un document profil dans Firestore.
-    @param {string} name - Nom complet
-    @param {string} email
-    @param {string} password
-    @returns {Promise<object>} User Firebase
+   * @param {string} name - Nom complet
+   * @param {string} email
+   * @param {string} password
+   * @returns {Promise<object>} User Firebase
    */
   register: function (name, email, password) {
     return auth.createUserWithEmailAndPassword(email, password)
@@ -35,9 +35,9 @@ var AuthModel = {
 
   /**
    * Connecte un utilisateur existant.
-    @param {string} email
-    @param {string} password
-    @returns {Promise<object>} User Firebase
+   * @param {string} email
+   * @param {string} password
+   * @returns {Promise<object>} User Firebase
    */
   login: function (email, password) {
     return auth.signInWithEmailAndPassword(email, password)
@@ -63,9 +63,10 @@ var AuthModel = {
 
   /**
    * Ecoute les changements d'etat d'authentification.
-    @param {function} callback - recoit (user) ou (null)
+   * @param {function} callback - recoit (user) ou (null)
    */
   onAuthStateChanged: function (callback) {
-    auth.onAuthStateChanged(callback);
+    // Retourner le unsubscribe pour stopper le listener apres usage
+    return auth.onAuthStateChanged(callback);
   }
 };

@@ -25,7 +25,7 @@ var AuthController = {
     });
   },
 
-  /*  Initialise la page d'inscription.  */
+  /* Initialise la page d'inscription. */
   initRegister: function () {
     AuthView.initRegister(function (name, email, password) {
       AuthView.hideError("register-error");
@@ -48,7 +48,7 @@ var AuthController = {
   logout: function () {
     AuthModel.logout()
       .then(function () {
-        // On pose le flag APRES la deconnexion reussie
+        // Flag pose APRES deconnexion confirmee
         sessionStorage.setItem("cv_just_logged_out", "true");
         window.location.href = "login.html";
       })
@@ -60,12 +60,14 @@ var AuthController = {
   /**
    * Verifie si l'utilisateur est connecte.
    * Redirige vers login si non connecte (pour pages protegees).
+   * Se desabonne apres le premier appel pour eviter les boucles.
    * @param {function} callback - recoit l'utilisateur si connecte
    */
   requireAuth: function (callback) {
     var unsubscribe = AuthModel.onAuthStateChanged(function (user) {
-      // On se desabonne apres le premier appel pour eviter les fuites
-      if (unsubscribe) unsubscribe();
+      // Se desabonner immediatement apres le premier declenchement
+      if (typeof unsubscribe === "function") unsubscribe();
+
       if (user) {
         callback(user);
       } else {
@@ -77,6 +79,7 @@ var AuthController = {
   /**
    * Si l'utilisateur est deja connecte, redirige vers dashboard.
    * (Pour les pages login/register)
+   * Se desabonne apres le premier appel pour eviter les boucles.
    * @param {function} callback - execute si pas connecte
    */
   redirectIfAuth: function (callback) {
@@ -86,10 +89,11 @@ var AuthController = {
     }
 
     var unsubscribe = AuthModel.onAuthStateChanged(function (user) {
-      if (unsubscribe) unsubscribe();
+      // Se desabonner immediatement apres le premier declenchement
+      if (typeof unsubscribe === "function") unsubscribe();
 
       if (justLoggedOut) {
-        // Vient de se deconnecter : on s'assure que Firebase a bien termine
+        // Vient de se deconnecter : s'assurer que Firebase a bien termine
         if (user) {
           AuthModel.logout().then(function () {
             if (callback) callback();
@@ -99,6 +103,7 @@ var AuthController = {
         }
       } else {
         if (user) {
+          // Utilisateur deja connecte -> dashboard directement
           window.location.href = "dashboard.html";
         } else {
           if (callback) callback();
@@ -109,19 +114,17 @@ var AuthController = {
 
   /**
    * Traduit les codes d'erreur Firebase en francais.
-   * @param {string} code
-   * @returns {string}
    */
   _translateError: function (code) {
     var errors = {
-      "auth/user-not-found": "Aucun compte trouve avec cet email.",
-      "auth/wrong-password": "Mot de passe incorrect.",
-      "auth/email-already-in-use": "Cet email est deja utilise.",
-      "auth/weak-password": "Le mot de passe est trop faible (minimum 6 caracteres).",
-      "auth/invalid-email": "L'adresse email n'est pas valide.",
-      "auth/too-many-requests": "Trop de tentatives. Reessayez plus tard.",
-      "auth/network-request-failed": "Erreur reseau. Verifiez votre connexion.",
-      "auth/invalid-credential": "Email ou mot de passe incorrect."
+      "auth/user-not-found":        "Aucun compte trouve avec cet email.",
+      "auth/wrong-password":        "Mot de passe incorrect.",
+      "auth/email-already-in-use":  "Cet email est deja utilise.",
+      "auth/weak-password":         "Le mot de passe est trop faible (minimum 6 caracteres).",
+      "auth/invalid-email":         "L'adresse email n'est pas valide.",
+      "auth/too-many-requests":     "Trop de tentatives. Reessayez plus tard.",
+      "auth/network-request-failed":"Erreur reseau. Verifiez votre connexion.",
+      "auth/invalid-credential":    "Email ou mot de passe incorrect."
     };
     return errors[code] || "Une erreur est survenue. Veuillez reessayer.";
   }

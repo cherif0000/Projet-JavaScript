@@ -69,8 +69,9 @@
 
           <div class="form-row">
             <div class="form-group">
-              <label for="input-fullname">Nom complet</label>
+              <label for="input-fullname">Nom complet <span class="required-star">*</span></label>
               <input type="text" id="input-fullname" class="form-input" placeholder="Cherif Khalla">
+              <p id="error-fullname" class="field-error hidden" role="alert"></p>
             </div>
             <div class="form-group">
               <label for="input-jobtitle">Poste vise</label>
@@ -80,11 +81,13 @@
           <div class="form-row">
             <div class="form-group">
               <label for="input-email">Email</label>
-              <input type="email" id="input-email" class="form-input" placeholder="cherif@example.com">
+              <input type="text" id="input-email" class="form-input" placeholder="cherif@example.com">
+              <p id="error-email" class="field-error hidden" role="alert"></p>
             </div>
             <div class="form-group">
               <label for="input-phone">Telephone</label>
-              <input type="tel" id="input-phone" class="form-input" placeholder="+221  00 000 00 00">
+              <input type="tel" id="input-phone" class="form-input" placeholder="+221 77 000 00 00">
+              <p id="error-phone" class="field-error hidden" role="alert"></p>
             </div>
           </div>
           <div class="form-group">
