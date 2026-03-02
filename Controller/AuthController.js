@@ -48,7 +48,6 @@ var AuthController = {
   logout: function () {
     AuthModel.logout()
       .then(function () {
-        // Flag pose APRES deconnexion confirmee
         sessionStorage.setItem("cv_just_logged_out", "true");
         window.location.href = "login.html";
       })
@@ -59,13 +58,10 @@ var AuthController = {
 
   /**
    * Verifie si l'utilisateur est connecte.
-   * Redirige vers login si non connecte (pour pages protegees).
-   * Se desabonne apres le premier appel pour eviter les boucles.
-   * @param {function} callback - recoit l'utilisateur si connecte
+    Pour les pages protegees (dashboard, builder).
    */
   requireAuth: function (callback) {
     var unsubscribe = AuthModel.onAuthStateChanged(function (user) {
-      // Se desabonner immediatement apres le premier declenchement
       if (typeof unsubscribe === "function") unsubscribe();
 
       if (user) {
@@ -77,10 +73,11 @@ var AuthController = {
   },
 
   /**
-   * Si l'utilisateur est deja connecte, redirige vers dashboard.
-   * (Pour les pages login/register)
-   * Se desabonne apres le premier appel pour eviter les boucles.
-   * @param {function} callback - execute si pas connecte
+   * Pour les pages login/register :
+   * - Si deja connecte → redirige vers dashboard
+   * - Sinon → execute le callback (initLogin ou initRegister)
+   * Se desabonne apres le premier appel — evite que le listener
+   * reste actif et redirige apres la connexion.
    */
   redirectIfAuth: function (callback) {
     var justLoggedOut = sessionStorage.getItem("cv_just_logged_out") === "true";
@@ -89,11 +86,12 @@ var AuthController = {
     }
 
     var unsubscribe = AuthModel.onAuthStateChanged(function (user) {
-      // Se desabonner immediatement apres le premier declenchement
+      // Stopper le listener immediatement apres le premier appel
+      // Sans ca, le listener reste actif et redirige des que l'utilisateur
+      // se connecte (comportement observe sur mobile)
       if (typeof unsubscribe === "function") unsubscribe();
 
       if (justLoggedOut) {
-        // Vient de se deconnecter : s'assurer que Firebase a bien termine
         if (user) {
           AuthModel.logout().then(function () {
             if (callback) callback();
@@ -103,28 +101,26 @@ var AuthController = {
         }
       } else {
         if (user) {
-          // Utilisateur deja connecte -> dashboard directement
+          // Session deja active → dashboard directement
           window.location.href = "dashboard.html";
         } else {
+          // Pas connecte → afficher le formulaire
           if (callback) callback();
         }
       }
     });
   },
 
-  /**
-   * Traduit les codes d'erreur Firebase en francais.
-   */
   _translateError: function (code) {
     var errors = {
-      "auth/user-not-found":        "Aucun compte trouve avec cet email.",
-      "auth/wrong-password":        "Mot de passe incorrect.",
-      "auth/email-already-in-use":  "Cet email est deja utilise.",
-      "auth/weak-password":         "Le mot de passe est trop faible (minimum 6 caracteres).",
-      "auth/invalid-email":         "L'adresse email n'est pas valide.",
-      "auth/too-many-requests":     "Trop de tentatives. Reessayez plus tard.",
-      "auth/network-request-failed":"Erreur reseau. Verifiez votre connexion.",
-      "auth/invalid-credential":    "Email ou mot de passe incorrect."
+      "auth/user-not-found":         "Aucun compte trouve avec cet email.",
+      "auth/wrong-password":         "Mot de passe incorrect.",
+      "auth/email-already-in-use":   "Cet email est deja utilise.",
+      "auth/weak-password":          "Le mot de passe est trop faible (minimum 6 caracteres).",
+      "auth/invalid-email":          "L'adresse email n'est pas valide.",
+      "auth/too-many-requests":      "Trop de tentatives. Reessayez plus tard.",
+      "auth/network-request-failed": "Erreur reseau. Verifiez votre connexion.",
+      "auth/invalid-credential":     "Email ou mot de passe incorrect."
     };
     return errors[code] || "Une erreur est survenue. Veuillez reessayer.";
   }
