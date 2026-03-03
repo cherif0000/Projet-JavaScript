@@ -112,7 +112,7 @@ var BuilderController = {
     var val = $("#input-phone").val().replace(/\s/g, "");
     if (val && !AuthView.validatePhoneSN(val)) {
       BuilderController._showError("input-phone", "error-phone",
-        "Numero invalide. Format : +221 7X XXX XX XX (Orange, Free, Wave...)");
+        "Numero invalide. Format : +221 7X XXX XX XX");
       return false;
     }
     BuilderController._clearError("input-phone", "error-phone");
