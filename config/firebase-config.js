@@ -1,5 +1,5 @@
 
-  //  irebase configuration
+  //  firebase configuration
   const firebaseConfig = {
     apiKey: "AIzaSyCwH0OkU-Ztl0xn6sNt1HTZ5E7O9dstx8c",
     authDomain: "cv-pro-cherif.firebaseapp.com",

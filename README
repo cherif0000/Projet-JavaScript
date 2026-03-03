@@ -21,17 +21,34 @@ Projet-JavaScript/
     DashboardController.js <-- Logique dashboard
     BuilderController.js  <-- Logique editeur CV
 ```
+
+
+Nous avons choisi d'utiliser JavaScript afin de rester dans le cadre pédagogique du cours. jQuery est utilisé pour simplifier la manipulation du DOM et la gestion des événements de manière cohérente.
+
+
+
+Firebase (Authentication + Firestore) Firebase a été choisi pour plusieurs raisons : Gratuit,
+Pas de backend à développer : Firebase fournit une API REST complète pour l'authentification et la base de données,
+Temps réel : Firestore permet des lectures/écritures instantanées
+Sécurité : Les règles Firestore garantissent que chaque utilisateur ne peut accéder qu'à ses propres données
+
+
    
-repartion des taches : 
-
-les tches ont ete reparties en trois partie 
-
-1- la connexion par mame soda lo 
-
-2- le dashboard (la page ou l'utulisateur pourra voir son cv enregistrer, les modifier et les supprimer  si il veut) par barkai korei mahamat
-
-3- l'authentification avec firebase et la generation du cv en temps reel par cherif khalla 
-
-remarque: y'as des fichiers ou on a travailles ensemble     
+Rôle de chaque couche MVC
+Modèle (Model/) : Gère uniquement la communication avec Firebase. Aucune logique d'affichage. Retourne des Promises pour toutes les opérations asynchrones.
+Vue (View/) : Gère uniquement le DOM — affichage, mise à jour des éléments HTML, gestion des événements de bas niveau. Ne communique jamais directement avec Firebase.
+Contrôleur (Controller/) : Fait le lien entre la Vue et le Modèle. Contient la logique métier : validation, redirections, gestion des erreurs, orchestration des appels.
+mes pages sont a la racine du projet 
 
 
+
+
+
+Répartition des tâches
+Les tâches ont été réparties en trois parties principales, bien que certains fichiers aient été développés en collaboration.
+
+Mame Soda Lo — Pages d'authentification
+
+Barkai Korei Mahamat — Tableau de bord
+
+Cherif Khalla — Authentification, Base de données et Builder

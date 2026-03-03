@@ -1,10 +1,3 @@
-/* ============================================================
-   CV Builder Pro - Styles principaux
-   Architecture MVC - Fichier CSS unique
-   Palette : Bleu professionnel #1e3a5f + gris neutres
-   ============================================================ */
-
-/* --- Reset & Base --- */
 *,
 *::before,
 *::after {
@@ -298,6 +291,11 @@ textarea.form-input {
   margin-top: 4px;
 }
 
+/* --- Validation champs --- */
+.field-error   { color: #e53e3e; font-size: 0.78rem; margin-top: 4px; }
+.input--error  { border-color: #e53e3e !important; }
+.required-star { color: #e53e3e; margin-left: 2px; }
+
 /* --- Buttons --- */
 .btn {
   display: inline-flex;
@@ -315,12 +313,6 @@ textarea.form-input {
   text-decoration: none;
   line-height: 1;
 }
-
-
-.field-error    { color: #e53e3e; font-size: 0.78rem; margin-top: 4px; }
-.input--error   { border-color: #e53e3e !important; }
-.required-star  { color: #e53e3e; margin-left: 2px; }
-
 
 .btn:hover {
   text-decoration: none;
@@ -1029,13 +1021,26 @@ textarea.form-input {
 }
 
 /* ============================================================
-   PRINT
+   PRINT / EXPORT PDF
    ============================================================ */
+
+/* Supprime l'URL, la date et les numéros de page ajoutés
+   automatiquement par le navigateur en bas/haut de page      */
+@page {
+  size: A4;
+  margin: 0;
+}
+
 @media print {
   body {
     background: white !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
 
+  /* Masquer tout sauf la prévisualisation du CV */
   .navbar,
   .builder__form,
   .builder__actions,
@@ -1046,17 +1051,26 @@ textarea.form-input {
 
   .builder {
     display: block;
+    padding: 0 !important;
+    margin: 0 !important;
   }
 
   .builder__preview {
-    background: none;
-    padding: 0;
-    max-height: none;
+    background: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+    display: block !important;
   }
 
+  /* Le CV occupe exactement la feuille A4 */
   .cv-preview {
-    box-shadow: none;
-    padding: 20px;
-    width: 100%;
+    box-shadow: none !important;
+    width: 210mm !important;
+    min-height: 297mm !important;
+    padding: 20mm !important;
+    margin: 0 !important;
+    page-break-inside: avoid;
   }
 }
