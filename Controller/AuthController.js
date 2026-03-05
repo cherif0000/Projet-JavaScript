@@ -48,7 +48,6 @@ var AuthController = {
   logout: function () {
     AuthModel.logout()
       .then(function () {
-        sessionStorage.setItem("cv_just_logged_out", "true");
         window.location.href = "login.html";
       })
       .catch(function () {
@@ -58,7 +57,7 @@ var AuthController = {
 
   /**
    * Verifie si l'utilisateur est connecte.
-    Pour les pages protegees (dashboard, builder).
+   * Pour les pages protegees (dashboard, builder).
    */
   requireAuth: function (callback) {
     var unsubscribe = AuthModel.onAuthStateChanged(function (user) {
@@ -72,41 +71,23 @@ var AuthController = {
     });
   },
 
-  /**
-   * Pour les pages login/register :
-   * - Si deja connecte → redirige vers dashboard
-   * - Sinon → execute le callback (initLogin ou initRegister)
-   * Se desabonne apres le premier appel — evite que le listener
-   * reste actif et redirige apres la connexion.
-   */
-  redirectIfAuth: function (callback) {
-    var justLoggedOut = sessionStorage.getItem("cv_just_logged_out") === "true";
-    if (justLoggedOut) {
-      sessionStorage.removeItem("cv_just_logged_out");
-    }
 
+  redirectIfAuth: function (callback) {
     var unsubscribe = AuthModel.onAuthStateChanged(function (user) {
-      // Stopper le listener immediatement apres le premier appel
-      // Sans ca, le listener reste actif et redirige des que l'utilisateur
-      // se connecte (comportement observe sur mobile)
       if (typeof unsubscribe === "function") unsubscribe();
 
-      if (justLoggedOut) {
-        if (user) {
-          AuthModel.logout().then(function () {
+      if (user) {
+        // Session encore active → deconnexion silencieuse avant d'afficher le formulaire
+        AuthModel.logout()
+          .then(function () {
+            if (callback) callback();
+          })
+          .catch(function () {
             if (callback) callback();
           });
-        } else {
-          if (callback) callback();
-        }
       } else {
-        if (user) {
-          // Session deja active → dashboard directement
-          window.location.href = "dashboard.html";
-        } else {
-          // Pas connecte → afficher le formulaire
-          if (callback) callback();
-        }
+        // Pas de session active → afficher le formulaire directement
+        if (callback) callback();
       }
     });
   },
