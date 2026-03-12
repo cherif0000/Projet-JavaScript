@@ -9,7 +9,7 @@ var AuthView = {
   /* ---- Regex de validation ---- */
   REGEX_EMAIL:    /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/,
   REGEX_PASSWORD: /^.{6,}$/,                              // minimum 6 caracteres (regle projet)
-  REGEX_PHONE_SN: /^(\+221|221)?(70|75|76|77|78)\d{7}$/, // format senegalais
+  REGEX_PHONE_SN: /^(\+221|221)?(70|76|77|78)\d{7}$/, // format senegalais
 
   /**
    * Initialise les ecouteurs du formulaire de connexion.

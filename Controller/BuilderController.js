@@ -2,8 +2,9 @@ var BuilderController = {
 
   currentUser: null,
   currentCVId: null,
+  currentStyle: 1,       // style actif (1 a 5), par defaut Classique
   debounceTimer: null,
-  localStorageKey: null, // cle unique par utilisateur + cvId
+  localStorageKey: null,
 
   /**
    * Initialise le builder.
@@ -12,31 +13,39 @@ var BuilderController = {
     AuthController.requireAuth(function (user) {
       BuilderController.currentUser = user;
 
-      var params      = new URLSearchParams(window.location.search);
-      var cvId        = params.get("id");
+      var params       = new URLSearchParams(window.location.search);
+      var cvId         = params.get("id");
+      var styleParam   = parseInt(params.get("style"), 10);
       var shouldExport = params.get("export") === "true";
 
-      // Cle localStorage unique : uid + cvId (ou "new" pour un nouveau CV)
+      // Cle localStorage unique : uid + cvId (ou "new")
       BuilderController.localStorageKey = "cv_draft_" + user.uid + "_" + (cvId || "new");
 
       if (cvId) {
+        // Edition d'un CV existant : charger depuis Firestore
         BuilderController.currentCVId = cvId;
         BuilderController.loadCV(cvId).then(function () {
-          // Apres chargement Firestore, on restaure le brouillon local s'il est plus recent
           BuilderController._restoreFromLocalStorage();
           if (shouldExport) {
             setTimeout(function () { BuilderController.exportPDF(); }, 500);
           }
         });
       } else {
-        // Nouveau CV : essayer de restaurer un brouillon local
-        var restored = BuilderController._restoreFromLocalStorage();
+        // Nouveau CV : appliquer le style choisi dans le style-picker
+        if (styleParam && styleParam >= 1 && styleParam <= 5) {
+          BuilderController.currentStyle = styleParam;
+        }
+        BuilderView.setStyle(BuilderController.currentStyle);
+
+        // On passe styleParam : si l'utilisateur vient du style-picker,
+        // son choix est prioritaire sur le style sauvegarde dans le brouillon.
+        var restored = BuilderController._restoreFromLocalStorage(styleParam || null);
         if (!restored) {
           BuilderView.updatePreview(CVModel.createEmptyCV());
         }
       }
 
-      // Live preview + auto-save localStorage
+      // Live preview + auto-save
       BuilderController.setupLivePreview();
 
       // Binding boutons
@@ -73,7 +82,7 @@ var BuilderController = {
         BuilderController.removeItem(this);
       });
 
-      // Validation en temps reel sur email et telephone du builder
+      // Validation en temps reel
       $(document).on("input", "#input-email", function () {
         BuilderController._validateBuilderEmail();
       });
@@ -90,10 +99,6 @@ var BuilderController = {
      VALIDATION
      ============================================================ */
 
-  /**
-   * Valide l'email dans le builder.
-   * @returns {boolean}
-   */
   _validateBuilderEmail: function () {
     var val = $.trim($("#input-email").val());
     if (val && !AuthView.REGEX_EMAIL.test(val)) {
@@ -104,10 +109,6 @@ var BuilderController = {
     return true;
   },
 
-  /**
-   * Valide le telephone au format senegalais.
-   * @returns {boolean}
-   */
   _validateBuilderPhone: function () {
     var val = $("#input-phone").val().replace(/\s/g, "");
     if (val && !AuthView.validatePhoneSN(val)) {
@@ -119,9 +120,6 @@ var BuilderController = {
     return true;
   },
 
-  /**
-   * Valide un champ obligatoire.
-   */
   _validateRequired: function (inputId, errorId, msg) {
     var val = $.trim($("#" + inputId).val());
     if (!val) {
@@ -132,10 +130,6 @@ var BuilderController = {
     return true;
   },
 
-  /**
-   * Valide tous les champs du builder avant sauvegarde.
-   * @returns {boolean}
-   */
   _validateAll: function () {
     var nameOk  = BuilderController._validateRequired("input-fullname", "error-fullname", "Le nom complet est requis.");
     var emailOk = BuilderController._validateBuilderEmail();
@@ -160,17 +154,14 @@ var BuilderController = {
   },
 
   /* ============================================================
-     LOCALSTORAGE — auto-save & restore
+     LOCALSTORAGE
      ============================================================ */
 
-  /**
-   * Sauvegarde le brouillon courant dans localStorage.
-   * Appele automatiquement a chaque modification du formulaire.
-   */
   _saveToLocalStorage: function () {
     if (!BuilderController.localStorageKey) return;
     try {
       var data = BuilderView.collectFormData();
+      data.style = BuilderController.currentStyle; // persister le style
       localStorage.setItem(
         BuilderController.localStorageKey,
         JSON.stringify({ savedAt: Date.now(), data: data })
@@ -180,11 +171,7 @@ var BuilderController = {
     }
   },
 
-  /**
-   * Restaure le brouillon depuis localStorage (si present).
-   * @returns {boolean} true si un brouillon a ete restaure
-   */
-  _restoreFromLocalStorage: function () {
+  _restoreFromLocalStorage: function (forceStyle) {
     if (!BuilderController.localStorageKey) return false;
     try {
       var raw = localStorage.getItem(BuilderController.localStorageKey);
@@ -193,13 +180,23 @@ var BuilderController = {
       var stored = JSON.parse(raw);
       if (!stored || !stored.data) return false;
 
+      // Si un style a ete explicitement choisi dans le style-picker (forceStyle),
+      // on le respecte et on ignore le style sauvegarde dans le brouillon.
+      // Sinon, on restaure le style du brouillon.
+      if (forceStyle && forceStyle >= 1 && forceStyle <= 5) {
+        BuilderController.currentStyle = forceStyle;
+        BuilderView.setStyle(forceStyle);
+      } else if (stored.data.style) {
+        BuilderController.currentStyle = stored.data.style;
+        BuilderView.setStyle(BuilderController.currentStyle);
+      }
+
       BuilderView.populateForm(stored.data);
       BuilderView.updatePreview(stored.data);
 
-      // Notifier l'utilisateur
       var date = new Date(stored.savedAt);
-      var hh   = date.getHours().toString().padStart(2, "0");
-      var mm   = date.getMinutes().toString().padStart(2, "0");
+      var hh = date.getHours().toString().padStart(2, "0");
+      var mm = date.getMinutes().toString().padStart(2, "0");
       Toast.show("Brouillon restaure (derniere modif. a " + hh + "h" + mm + ")", "info");
       return true;
     } catch (e) {
@@ -208,20 +205,24 @@ var BuilderController = {
     }
   },
 
-  /**
-   * Supprime le brouillon local (apres sauvegarde Firestore reussie).
-   */
   _clearLocalStorage: function () {
     if (!BuilderController.localStorageKey) return;
     try { localStorage.removeItem(BuilderController.localStorageKey); } catch (e) {}
   },
 
-
+  /* ============================================================
+     CORE
+     ============================================================ */
 
   loadCV: function (cvId) {
     return CVModel.getCVById(BuilderController.currentUser.uid, cvId)
       .then(function (cv) {
         if (cv) {
+          // Restaurer le style sauvegarde dans le CV
+          if (cv.style) {
+            BuilderController.currentStyle = cv.style;
+            BuilderView.setStyle(BuilderController.currentStyle);
+          }
           BuilderView.populateForm(cv);
           BuilderView.updatePreview(cv);
         } else {
@@ -235,25 +236,18 @@ var BuilderController = {
       });
   },
 
-  /**
-   * Live preview + auto-save localStorage a chaque frappe.
-   */
   setupLivePreview: function () {
     $("#builder-form").on("input change", function () {
       clearTimeout(BuilderController.debounceTimer);
       BuilderController.debounceTimer = setTimeout(function () {
         var data = BuilderView.collectFormData();
         BuilderView.updatePreview(data);
-        BuilderController._saveToLocalStorage(); // auto-save
+        BuilderController._saveToLocalStorage();
       }, 300);
     });
   },
 
-  /**
-   * Sauvegarde le CV dans Firestore (avec validation prealable).
-   */
   saveCV: function () {
-    // Validation avant sauvegarde
     if (!BuilderController._validateAll()) {
       Toast.show("Veuillez corriger les erreurs avant de sauvegarder.", "error");
       return;
@@ -263,16 +257,15 @@ var BuilderController = {
     $btn.prop("disabled", true).html('<span class="spinner"></span> Sauvegarde...');
 
     var cvData = BuilderView.collectFormData();
+    cvData.style = BuilderController.currentStyle; // inclure le style dans les donnees
 
     CVModel.saveCV(BuilderController.currentUser.uid, BuilderController.currentCVId, cvData)
       .then(function (savedId) {
         BuilderController.currentCVId = savedId;
 
-        // Mettre a jour la cle localStorage avec le vrai ID du CV
         var oldKey = BuilderController.localStorageKey;
         BuilderController.localStorageKey = "cv_draft_" + BuilderController.currentUser.uid + "_" + savedId;
 
-        // Supprimer l'ancien brouillon local (sauvegarde Firestore = source de verite)
         try { localStorage.removeItem(oldKey); } catch(e) {}
         BuilderController._clearLocalStorage();
 
@@ -297,8 +290,32 @@ var BuilderController = {
       });
   },
 
-  exportPDF: function () { window.print(); },
+exportPDF: function () {
+  var element = document.getElementById("cv-preview-content");
+  var nomCV = $("#input-fullname").val().trim() || "mon-cv";
 
+  $(element).css("min-height", "unset");
+
+  var options = {
+    margin:      [0, 0, 0, 0],
+    filename:    nomCV + ".pdf",
+    image:       { type: "jpeg", quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true, scrollY: 0 },
+    jsPDF:       { unit: "mm", format: "a4", orientation: "portrait" },
+    pagebreak:   { mode: ["avoid-all", "css"] }
+  };
+
+  var $btn = $("#export-btn");
+  $btn.prop("disabled", true).html('<span class="spinner"></span> Export...');
+
+  html2pdf().set(options).from(element).save()
+    .then(function () {
+      // ← Remettre le min-height après l'export
+      $(element).css("min-height", "297mm");
+      $btn.prop("disabled", false).html("Exporter PDF");
+      Toast.show("PDF téléchargé avec succès !", "success");
+    });
+},
   addExperience: function () {
     BuilderView.addExperienceItem();
     BuilderController.triggerPreviewUpdate();

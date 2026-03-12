@@ -1,30 +1,52 @@
-
 Projet-JavaScript/
-  index.html              <-- Page d'accueil
-  login.html              <-- Connexion
-  register.html           <-- Inscription
-  dashboard.html          <-- Liste des CVs
-  builder.html            <-- Editeur de CV
-  css/style.css           <-- Styles
-  config/
-    firebase-config.js    <-- la configuration (BD et authentification) avec Firebase
-    Toast.js              <-- Notifications
-  Model/
-    AuthModel.js          <-- Gestion authentification
-    CVModel.js            <-- Gestion des CVs
-  View/
-    AuthView.js           <-- Affichage formulaires auth
-    DashboardView.js      <-- Affichage grille CVs
-    BuilderView.js        <-- Affichage formulaire + preview
-  Controller/
-    AuthController.js     <-- Logique auth
-    DashboardController.js <-- Logique dashboard
-    BuilderController.js  <-- Logique editeur CV
+│
+├── index.html                  ← Page d'accueil
+├── login.html                  ← Connexion
+├── register.html               ← Inscription
+├── dashboard.html              ← Tableau de bord (liste des CVs)
+├── builder.html                ← Éditeur de CV
+├── style-picker.html           ← Choix du template
+│
+├── css/
+│   └── style.css               ← Tous les styles (+ responsive + 5 templates)
+│
+├── config/
+│   ├── firebase-config.js      ← Configuration Firebase (Auth + Firestore)
+│   └── Toast.js                ← Système de notifications
+│
+├── Model/                      ← Couche données
+│   ├── AuthModel.js            ← Authentification Firebase
+│   └── CVModel.js              ← CRUD des CVs dans Firestore
+│
+├── View/                       ← Couche affichage
+│   ├── AuthView.js             ← Formulaires connexion / inscription + validation
+│   ├── DashboardView.js        ← Grille des CVs
+│   └── BuilderView.js          ← Formulaire + prévisualisation + 5 rendus de templates
+│
+└── Controller/                 ← Couche logique
+    ├── AuthController.js       ← Logique d'authentification et redirections
+    ├── DashboardController.js  ← Logique du tableau de bord
+    └── BuilderController.js    ← Logique de l'éditeur (live preview, localStorage, sauvegarde)
 ```
 
+---
 
-Nous avons choisi d'utiliser JavaScript afin de rester dans le cadre pédagogique du cours. jQuery est utilisé pour simplifier la manipulation du DOM et la gestion des événements de manière cohérente.
+## 🏗️ Architecture MVC
 
+Le projet suit une architecture **MVC stricte** avec une séparation claire des responsabilités :
+
+### Modèle (`Model/`)
+Gère **uniquement** la communication avec Firebase. Ne contient aucune logique d'affichage. Toutes les opérations asynchrones retournent des `Promise`.
+
+### Vue (`View/`)
+Gère **uniquement** le DOM : affichage, mise à jour du HTML, écoute des événements de bas niveau. Ne communique jamais directement avec Firebase.
+
+### Contrôleur (`Controller/`)
+Fait le lien entre la Vue et le Modèle. Contient la logique métier : validation, redirections, gestion des erreurs, orchestration des appels.
+
+> **Règle d'or** : le Modèle et la Vue ne se connaissent pas. Seul le Contrôleur connaît les deux.
+
+---
 
 
 Firebase (Authentication + Firestore) Firebase a été choisi pour plusieurs raisons : Gratuit,
@@ -33,22 +55,16 @@ Temps réel : Firestore permet des lectures/écritures instantanées
 Sécurité : Les règles Firestore garantissent que chaque utilisateur ne peut accéder qu'à ses propres données
 
 
-   
-Rôle de chaque couche MVC
-Modèle (Model/) : Gère uniquement la communication avec Firebase. Aucune logique d'affichage. Retourne des Promises pour toutes les opérations asynchrones.
-Vue (View/) : Gère uniquement le DOM — affichage, mise à jour des éléments HTML, gestion des événements de bas niveau. Ne communique jamais directement avec Firebase.
-Contrôleur (Controller/) : Fait le lien entre la Vue et le Modèle. Contient la logique métier : validation, redirections, gestion des erreurs, orchestration des appels.
-mes pages sont a la racine du projet 
-
 
 
 
 
 Répartition des tâches
-Les tâches ont été réparties en trois parties principales, bien que certains fichiers aient été développés en collaboration.
 
-Mame Soda Lo — Pages d'authentification
+Mame Soda Lo — Pages d'authentification(login, register)
 
-Barkai Korei Mahamat — Tableau de bord
+Barkai Korei Mahamat — Tableau de bord et page d'acceuil 
 
-Cherif Khalla — Authentification, Base de données et Builder
+Cherif Khalla — configuration Firebase, Builder et templates
+
+Remarque: Certains fichiers ont été développés en collaboration entre les membres.

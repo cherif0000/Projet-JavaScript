@@ -23,7 +23,7 @@ var DashboardController = {
         AuthController.logout();
       });
 
-      // Binding du bouton nouveau CV
+      // Binding du bouton nouveau CV → page de selection du style
       $(document).on("click", "#btn-new-cv", function () {
         DashboardController.createNewCV();
       });
@@ -45,14 +45,16 @@ var DashboardController = {
   },
 
   /**
-   * Redirige vers le builder pour creer un nouveau CV.
+   * Redirige vers la page de selection du style avant de creer un CV.
+   * L'utilisateur choisit son style, puis est redirige vers builder.html?style=X
    */
   createNewCV: function () {
-    window.location.href = "builder.html";
+    window.location.href = "style-picker.html";
   },
 
   /**
    * Redirige vers le builder pour editer un CV existant.
+   * Pas besoin de repasser par le style-picker : le style est deja sauvegarde dans le CV.
    * @param {string} cvId
    */
   editCV: function (cvId) {

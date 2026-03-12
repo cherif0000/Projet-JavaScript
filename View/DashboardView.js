@@ -3,7 +3,6 @@
    Gere l'affichage du tableau de bord : liste des CVs,
    etat vide, actions (editer, supprimer), et modale de
    confirmation de suppression.
-   Utilise jQuery pour la manipulation du DOM.
  */
 
 var DashboardView = {
