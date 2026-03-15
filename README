@@ -29,27 +29,24 @@ Projet-JavaScript/
     └── BuilderController.js    ← Logique de l'éditeur (live preview, localStorage, sauvegarde)
 ```
 
----
 
-## 🏗️ Architecture MVC
+
+Architecture MVC : 
 
 Le projet suit une architecture **MVC stricte** avec une séparation claire des responsabilités :
 
-### Modèle (`Model/`)
-Gère **uniquement** la communication avec Firebase. Ne contient aucune logique d'affichage. Toutes les opérations asynchrones retournent des `Promise`.
+## Model/
+Gère uniquement la communication avec Firebase. Ne contient aucune logique d'affichage. Toutes les opérations asynchrones retournent des `Promise`.
 
-### Vue (`View/`)
-Gère **uniquement** le DOM : affichage, mise à jour du HTML, écoute des événements de bas niveau. Ne communique jamais directement avec Firebase.
+ ## View/
+Gère uniquement le DOM : affichage, mise à jour du HTML, écoute des événements de bas niveau. Ne communique jamais directement avec Firebase.
 
-### Contrôleur (`Controller/`)
+## Controller/
 Fait le lien entre la Vue et le Modèle. Contient la logique métier : validation, redirections, gestion des erreurs, orchestration des appels.
 
-> **Règle d'or** : le Modèle et la Vue ne se connaissent pas. Seul le Contrôleur connaît les deux.
-
----
 
 
-Firebase (Authentication + Firestore) Firebase a été choisi pour plusieurs raisons : Gratuit,
+Firebase (Authentication + Firestore) a été choisi pour plusieurs raisons : Gratuit,
 Pas de backend à développer : Firebase fournit une API REST complète pour l'authentification et la base de données,
 Temps réel : Firestore permet des lectures/écritures instantanées
 Sécurité : Les règles Firestore garantissent que chaque utilisateur ne peut accéder qu'à ses propres données
@@ -59,7 +56,7 @@ Sécurité : Les règles Firestore garantissent que chaque utilisateur ne peut a
 
 
 
-Répartition des tâches
+Répartition des tâches : 
 
 Mame Soda Lo — Pages d'authentification(login, register)
 
