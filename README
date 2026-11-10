@@ -50,18 +50,3 @@ Firebase (Authentication + Firestore) a été choisi pour plusieurs raisons : Gr
 Pas de backend à développer : Firebase fournit une API REST complète pour l'authentification et la base de données,
 Temps réel : Firestore permet des lectures/écritures instantanées
 Sécurité : Les règles Firestore garantissent que chaque utilisateur ne peut accéder qu'à ses propres données
-
-
-
-
-
-
-Répartition des tâches : 
-
-Mame Soda Lo — Pages d'authentification(login, register)
-
-Barkai Korei Mahamat — Tableau de bord et page d'acceuil 
-
-Cherif Khalla — configuration Firebase, Builder et templates
-
-Remarque: Certains fichiers ont été développés en collaboration entre les membres.
